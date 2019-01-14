@@ -131,22 +131,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>
     }
 
     private void deleteEvent(Event event){
-        /*Completable
-                .fromSingle((SingleSource<Void>) observer ->
-                        App.getInstance().getDb().getEventDao().delete(event))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableCompletableObserver() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete: success del event");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-                });*/
         Completable.fromAction(()
                 -> App.getInstance().getDb().getEventDao().delete(event))
                 .subscribeOn(Schedulers.newThread())

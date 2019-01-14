@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,10 @@ import sem.ru.plusminus.mvp.model.EventTime;
 import sem.ru.plusminus.mvp.presenter.EditEventPresenter;
 import sem.ru.plusminus.mvp.view.EditEventView;
 import sem.ru.plusminus.ui.adapter.EventTimeAdapter;
+import sem.ru.plusminus.ui.adapter.SwipeToDeleteCallbackET;
 
-public class EditEventFragment extends MvpAppCompatFragment implements EditEventView {
+public class EditEventFragment extends MvpAppCompatFragment implements EditEventView,
+            EventTimeAdapter.OnEventTimeListener{
 
     @BindView(R.id.edMinus)
     EditText edMinus;
@@ -86,7 +89,7 @@ public class EditEventFragment extends MvpAppCompatFragment implements EditEvent
             presenter.getCurrentEvent().name=edName.getText().toString();
             presenter.getCurrentEvent().plusName=edPlus.getText().toString();
             presenter.getCurrentEvent().minusName=edMinus.getText().toString();
-            presenter.updateEvent();
+            presenter.updateEventAndFinish();
         }
     }
 
@@ -109,10 +112,14 @@ public class EditEventFragment extends MvpAppCompatFragment implements EditEvent
 
     @Override
     public void setEventTimeItems(List<EventTime> eventTimes) {
-        adapter = new EventTimeAdapter(eventTimes);
+        adapter = new EventTimeAdapter(eventTimes, this::onEventTimeDelete);
         rvEventTimes.setAdapter(adapter);
         rvEventTimes.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
+
+        ItemTouchHelper itemTouchHelper = new
+                ItemTouchHelper(new SwipeToDeleteCallbackET(adapter));
+        itemTouchHelper.attachToRecyclerView(rvEventTimes);
     }
 
     @Override
@@ -120,5 +127,15 @@ public class EditEventFragment extends MvpAppCompatFragment implements EditEvent
         edMinus.setText(event.minusName);
         edName.setText(event.name);
         edPlus.setText(event.plusName);
+    }
+
+    @Override
+    public void onEventTimeDelete(boolean isPositive) {
+        if(isPositive){
+            presenter.getCurrentEvent().cntPlus--;
+        }else {
+            presenter.getCurrentEvent().cntMinus--;
+        }
+        presenter.updateEvent();
     }
 }

@@ -62,18 +62,24 @@ public class EditEventPresenter extends BasePresenter<EditEventView> {
         unsubscribeOnDestroy(d);
     }
 
-    public void updateEvent(){
-        updateEvent(this.currentEvent);
+    public void updateEventAndFinish(){
+        updateEvent(this.currentEvent, true);
     }
 
-    public void updateEvent(Event event){
+    public void updateEvent(){
+        updateEvent(this.currentEvent, false);
+    }
+
+    public void updateEvent(Event event, boolean finish) {
         Completable.fromAction(()
                 -> App.getInstance().getDb().getEventDao().update(event))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
                     Log.d(TAG, "onComplete: success upd event");
-                    getViewState().onEventUpdated(eventId, eventPos);
+                    if(finish) {
+                        getViewState().onEventUpdated(eventId, eventPos);
+                    }
                 }, throwable -> {
                     Log.e(TAG, "updateEvent: fail update event");
                     throwable.printStackTrace();
@@ -83,10 +89,11 @@ public class EditEventPresenter extends BasePresenter<EditEventView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
+        loadCurrentEvent();
         getEvents(Observable
                 .fromCallable(() -> App.getInstance().getDb()
                         .getEventTimeDao().findTimesForEvent(eventId)));
-        loadCurrentEvent();
+
     }
 
     private void getEvents(Observable<List<EventTime>> eventsObservable){
