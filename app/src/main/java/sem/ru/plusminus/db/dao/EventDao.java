@@ -22,7 +22,7 @@ public interface EventDao {
     @Delete
     void delete(Event event);
 
-    @Query("SELECT * FROM event")
+    @Query("SELECT * FROM event ORDER BY pos ASC")
     List<Event> getAll();
 
     @Query("SELECT * FROM Event WHERE id = :id")

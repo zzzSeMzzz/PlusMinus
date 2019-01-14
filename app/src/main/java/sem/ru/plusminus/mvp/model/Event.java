@@ -9,6 +9,8 @@ public class Event {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
+    public int pos;
+
     public String name;
 
     public String plusName;
@@ -25,12 +27,14 @@ public class Event {
         minusName="-";
     }
 
-    public Event(String name, String plusName, String minusName, int cntPlus, int cntMinus) {
+    public Event(String name, String plusName, String minusName, int cntPlus,
+                 int cntMinus, int pos) {
         this.name = name;
         this.plusName = plusName;
         this.minusName = minusName;
         this.cntPlus = cntPlus;
         this.cntMinus = cntMinus;
+        this.pos = pos;
     }
 
 

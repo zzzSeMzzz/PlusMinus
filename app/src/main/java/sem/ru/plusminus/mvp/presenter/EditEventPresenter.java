@@ -23,6 +23,11 @@ public class EditEventPresenter extends BasePresenter<EditEventView> {
 
     private long eventId;
     private int eventPos;
+    private int eventsSize;
+
+    public int getEventsSize() {
+        return eventsSize;
+    }
 
     private Event currentEvent;
 
@@ -34,9 +39,10 @@ public class EditEventPresenter extends BasePresenter<EditEventView> {
         return currentEvent;
     }
 
-    public EditEventPresenter(long eventId, int eventPos) {
+    public EditEventPresenter(long eventId, int eventPos, int eventsSize) {
         this.eventId = eventId;
         this.eventPos = eventPos;
+        this.eventsSize = eventsSize;
     }
 
     public void insertEvent(Event event){

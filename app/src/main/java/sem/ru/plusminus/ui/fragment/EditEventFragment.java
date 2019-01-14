@@ -45,7 +45,8 @@ public class EditEventFragment extends MvpAppCompatFragment implements EditEvent
     EditEventPresenter provideEditEventPresenter(){
         return new EditEventPresenter(
                 getArguments().getLong("id", -1),
-                getArguments().getInt("pos", -1)
+                getArguments().getInt("pos", -1),
+                getArguments().getInt("size", 0)
         );
     }
 
@@ -77,7 +78,8 @@ public class EditEventFragment extends MvpAppCompatFragment implements EditEvent
                     edPlus.getText().toString().isEmpty() ? "+" : edPlus.getText().toString(),
                     edMinus.getText().toString().isEmpty() ? "-" : edMinus.getText().toString(),
                     0,
-                    0
+                    0,
+                    presenter.getEventsSize()//по умолдчанию добавляется в последнюю позицию
             );
             presenter.insertEvent(event);
         }else{

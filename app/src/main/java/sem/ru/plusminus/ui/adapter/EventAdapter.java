@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -24,7 +25,8 @@ import sem.ru.plusminus.mvp.model.EventTime;
 import sem.ru.plusminus.utils.TimeUtil;
 
 
-public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
+public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>
+    implements ItemTouchHelperAdapter{
 
     private List<Event> items;
     private static final String TAG = "EventAdapter";
@@ -81,23 +83,6 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
     }
 
     private void updateEvent(Event event, boolean isPositive){
-        /*Completable
-                .fromSingle((SingleSource<Void>) observer ->
-                        App.getInstance().getDb().getEventDao().update(event))
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableCompletableObserver() {
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "onComplete: success upd event");
-                        addEventTime(event, isPositive);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-                });*/
         Completable.fromAction(()
                 -> App.getInstance().getDb().getEventDao().update(event))
                 .subscribeOn(Schedulers.newThread())
@@ -105,6 +90,19 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 .subscribe(() -> {
                     Log.d(TAG, "onComplete: success upd event");
                     addEventTime(event, isPositive);
+                }, throwable -> {
+                    Log.e(TAG, "updateEvent: fail update event");
+                    throwable.printStackTrace();
+                });
+    }
+
+    private void updateEvent(Event event){
+        Completable.fromAction(()
+                -> App.getInstance().getDb().getEventDao().update(event))
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    Log.d(TAG, "onComplete: success upd event");
                 }, throwable -> {
                     Log.e(TAG, "updateEvent: fail update event");
                     throwable.printStackTrace();
@@ -182,6 +180,16 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         return items.size();
     }
 
+    @Override
+    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
+        Event event = items.get(i);
+        viewHolder.tvMinus.setText(getMinusPercent(event));
+        viewHolder.tvPlus.setText(getPlusPercent(event));
+        viewHolder.tvName.setText(event.name);
+        viewHolder.btnMinus.setText(event.minusName);
+        viewHolder.btnPlus.setText(event.plusName);
+    }
+
     private String getMinusPercent(Event event){
         int sum = event.cntMinus+event.cntPlus;
         int p =Math.round((event.cntMinus * 100.0f) / sum);
@@ -194,25 +202,10 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
         return String.format("%d%s (%d)",p, "%", event.cntPlus);
     }
 
-    @Override
-    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
-        Event event = items.get(i);
-        viewHolder.tvMinus.setText(getMinusPercent(event));
-        viewHolder.tvPlus.setText(getPlusPercent(event));
-        viewHolder.tvName.setText(event.name);
-        viewHolder.btnMinus.setText(event.minusName);
-        viewHolder.btnPlus.setText(event.plusName);
-    }
-
 
     public void addItem(Event event){
         items.add(event);
         notifyItemRangeInserted(items.size()-1, 1);
-    }
-
-    public void clearItems(){
-        items.clear();
-        notifyDataSetChanged();
     }
 
     public void deleteItem(int position){
@@ -244,4 +237,34 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.ViewHolder>{
                 );
     }
 
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(items, i, i + 1);
+                Event event = items.get(i);
+                event.pos=event.pos-1;
+                updateEvent(event);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(items, i, i - 1);
+                Event event = items.get(i);
+                event.pos=event.pos+1;
+                updateEvent(event);
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition);
+        Event event = items.get(toPosition);
+        event.pos=toPosition;
+        updateEvent(event);
+
+        return true;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        /*items.remove(position);
+        notifyItemRemoved(position);*/
+    }
 }

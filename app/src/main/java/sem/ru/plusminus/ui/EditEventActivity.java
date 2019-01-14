@@ -26,6 +26,7 @@ public class EditEventActivity extends MvpBackActivity implements EditEventActiv
         Bundle args = new Bundle();
         args.putLong("id", getIntent().getLongExtra("id", -1));
         args.putInt("pos", getIntent().getIntExtra("pos", -1));
+        args.putInt("size", getIntent().getIntExtra("size", 0));
         fragment.setArguments(args);
         getSupportFragmentManager()
                 .beginTransaction()

@@ -25,6 +25,7 @@ import sem.ru.plusminus.mvp.model.Event;
 import sem.ru.plusminus.mvp.presenter.MainPresenter;
 import sem.ru.plusminus.mvp.view.MainView;
 import sem.ru.plusminus.ui.EditEventActivity;
+import sem.ru.plusminus.ui.adapter.DragItemTouchHelperCallback;
 import sem.ru.plusminus.ui.adapter.EventAdapter;
 import sem.ru.plusminus.ui.adapter.SwipeToDeleteCallback;
 
@@ -84,12 +85,18 @@ public class MainFragment extends MvpAppCompatFragment implements MainView,
         ItemTouchHelper itemTouchHelper = new
                 ItemTouchHelper(new SwipeToDeleteCallback(adapter));
         itemTouchHelper.attachToRecyclerView(rvEvents);
+
+        ItemTouchHelper.Callback callback =
+                new DragItemTouchHelperCallback(adapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(rvEvents);
     }
 
     private void showEdit(long id, int pos){
         Intent intent = new Intent(getActivity(), EditEventActivity.class);
         intent.putExtra("id", id);
         intent.putExtra("pos", pos);
+        intent.putExtra("size", adapter.getItemCount());
         startActivityForResult(intent, REQUEST_EDIT_EVENT);
     }
 
