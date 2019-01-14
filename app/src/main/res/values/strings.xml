@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Плюс Минус</string>
+    <string name="empty_events">Пока нет ни одного события\nНажмите +, чтобы добавить новое</string>
+    <string name="positive_change">Позитивное изменение</string>
+    <string name="negative_change">Негативное изменение</string>
+    <string name="name_event">Название счетчика</string>
+    <string name="add">Добавить</string>
+</resources>
