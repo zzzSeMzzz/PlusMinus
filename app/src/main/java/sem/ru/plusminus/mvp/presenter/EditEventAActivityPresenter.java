@@ -10,6 +10,6 @@ public class EditEventAActivityPresenter extends BasePresenter<EditEventActivity
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        getViewState().init();
+        getViewState().initFragment();
     }
 }

@@ -22,6 +22,7 @@ public class MainPresenter extends BasePresenter<MainView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
+        Log.d(TAG, "onFirstViewAttach");
         //List<Event> events = App.getInstance().getDb().getEventDao().getAll();
         //getViewState().setItems(events);
        // if(events.size()==0) getViewState().showEmptyText(true);

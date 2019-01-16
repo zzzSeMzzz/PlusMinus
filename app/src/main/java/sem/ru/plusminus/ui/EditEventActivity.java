@@ -21,7 +21,7 @@ public class EditEventActivity extends MvpBackActivity implements EditEventActiv
     }
 
     @Override
-    public void init() {
+    public void initFragment() {
         EditEventFragment fragment = new EditEventFragment();
         Bundle args = new Bundle();
         args.putLong("id", getIntent().getLongExtra("id", -1));

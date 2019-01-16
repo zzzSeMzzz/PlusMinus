@@ -7,5 +7,5 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 public interface EditEventActivityView extends MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy.class)
-    void init();
+    void initFragment();
 }
