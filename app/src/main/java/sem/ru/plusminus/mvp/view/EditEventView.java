@@ -14,7 +14,7 @@ public interface EditEventView extends BaseView {
 
     void onEventUpdated(Long id, int pos);
 
-    @StateStrategyType(OneExecutionStateStrategy.class)
+    //@StateStrategyType(OneExecutionStateStrategy.class)
     void setEventTimeItems(List<EventTime> eventTimes);
 
     @StateStrategyType(OneExecutionStateStrategy.class)

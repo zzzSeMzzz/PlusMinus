@@ -24,6 +24,15 @@ public class EditEventPresenter extends BasePresenter<EditEventView> {
     private long eventId;
     private int eventPos;
     private int eventsSize;
+    private boolean isEventTimeDeleted;
+
+    public boolean isEventTimeDeleted() {
+        return isEventTimeDeleted;
+    }
+
+    public int getEventPos() {
+        return eventPos;
+    }
 
     public int getEventsSize() {
         return eventsSize;
@@ -66,7 +75,8 @@ public class EditEventPresenter extends BasePresenter<EditEventView> {
         updateEvent(this.currentEvent, true);
     }
 
-    public void updateEvent(){
+    public void deleteEventTime(){
+        isEventTimeDeleted=true;//значит мы удалил только время из события
         updateEvent(this.currentEvent, false);
     }
 

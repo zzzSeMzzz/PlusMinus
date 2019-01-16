@@ -1,6 +1,8 @@
 package sem.ru.plusminus.ui;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.MenuItem;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 
@@ -32,5 +34,26 @@ public class EditEventActivity extends MvpBackActivity implements EditEventActiv
                 .beginTransaction()
                 .replace(R.id.frame, fragment)
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed(){
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.frame);
+        if (!(fragment instanceof EditEventFragment)) {
+            super.onBackPressed();
+        }else{
+            ((EditEventFragment) fragment).onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

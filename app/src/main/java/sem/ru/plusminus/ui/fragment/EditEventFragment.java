@@ -136,6 +136,16 @@ public class EditEventFragment extends MvpAppCompatFragment implements EditEvent
         }else {
             presenter.getCurrentEvent().cntMinus--;
         }
-        presenter.updateEvent();
+        presenter.deleteEventTime();
     }
+
+    public void onBackPressed(){
+        if(presenter.isEventTimeDeleted()){
+            onEventUpdated(presenter.getEventId(), presenter.getEventPos());
+        }else{
+            getActivity().finish();
+        }
+    }
+
+
 }
